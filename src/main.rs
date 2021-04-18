@@ -1,12 +1,9 @@
-use std::fs;
-use std::path;
-use std::process;
 use std::io::Write;
 
 
 
 fn main() {
-	
+
 }
 
 fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &std::path::Path) -> Result<(), std::io::Error> {
@@ -23,12 +20,12 @@ fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &std::p
 		}
 	}
 
-	let bbsq_out = process::Command::new(&bbsq_path)
+	let bbsq_out = std::process::Command::new(&bbsq_path)
 									.args(&["-d", &temp_file_path.to_str().unwrap()])
 									.output()
 									.expect("Failed to find bbsq (has the file been moved?)");
 
-	let nutcracker_out = process::Command::new("cmd")
+	let nutcracker_out = std::process::Command::new("cmd")
 										  .args(&["/C", &nutcracker_path.to_str().unwrap()])
 										  .args(&[&temp_file_path.to_str().unwrap(), ">", file_target_path.to_str().unwrap()])
 										  .output()
@@ -36,7 +33,7 @@ fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &std::p
 
 	println!("bbsq: {:?} nutcracker: {:?}", bbsq_out, nutcracker_out);
 
-	match fs::remove_file(temp_file_path) {
+	match std::fs::remove_file(temp_file_path) {
 				Ok(()) => (),
 				Err(error) => {
 					println!("Failed to delete temp.cnut: {}", error);
@@ -50,7 +47,7 @@ fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &std::p
 fn compile_nut(file_source_path: &std::path::Path) -> Result<(), std::io::Error> {
 	let bbsq_path = std::env::current_dir().unwrap().join("adams_kit").join("bbsq.exe"); 
 
-	let bbsq_out = process::Command::new(&bbsq_path)
+	let bbsq_out = std::process::Command::new(&bbsq_path)
 									.args(&["-e", &file_source_path.to_str().unwrap()])
 									.output()
 									.expect("Failed to find bbsq (has the file been moved?)");
@@ -60,7 +57,7 @@ fn compile_nut(file_source_path: &std::path::Path) -> Result<(), std::io::Error>
 	return Ok(())
 }
 
-fn import_mod (mod_file_path: &path::Path, target_dir: &path::Path, delete_cnuts: bool) -> i32{
+fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path, delete_cnuts: bool) -> i32{
 	//Return 0 = Ok
 	//1 = Error before file changes
 	//2 = Error after file changes
@@ -68,7 +65,7 @@ fn import_mod (mod_file_path: &path::Path, target_dir: &path::Path, delete_cnuts
 
 	let imported_mod_path = target_dir.join(mod_file_path.file_stem().unwrap());
 
-	let mut archive = match zip::ZipArchive::new(fs::File::open(mod_file_path).unwrap()) {
+	let mut archive = match zip::ZipArchive::new(std::fs::File::open(mod_file_path).unwrap()) {
 		Ok(zip) => zip,
 		Err(error) => {
 			println!("Error: {}", error);
@@ -107,7 +104,7 @@ fn import_mod (mod_file_path: &path::Path, target_dir: &path::Path, delete_cnuts
 
 
 			if delete_cnuts {
-				match fs::remove_file(file_path){
+				match std::fs::remove_file(file_path){
 					Ok(()) => (),
 					Err(error) => {
 						println!("Failed to delete file: {}", error);
@@ -121,7 +118,7 @@ fn import_mod (mod_file_path: &path::Path, target_dir: &path::Path, delete_cnuts
 	return 0
 }
 
-fn export_mod (mod_source_path: &path::Path, target_dir: &path::Path, compile: bool, delete_nuts: bool) -> Result<(), std::io::Error>{
+fn export_mod (mod_source_path: &std::path::Path, target_dir: &std::path::Path, compile: bool, delete_nuts: bool) -> Result<(), std::io::Error>{
 	let mut mod_target_path = target_dir.join(mod_source_path.file_stem().unwrap());
 	mod_target_path.set_extension("zip");
 	println!("file: {:?}", mod_target_path);
