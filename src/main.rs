@@ -1,9 +1,6 @@
 use std::io::Write;
 
-
-
 fn main() {
-
 }
 
 fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &std::path::Path) -> Result<(), std::io::Error> {
@@ -44,7 +41,7 @@ fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &std::p
 	return Ok(())
 }
 
-fn compile_nut(file_source_path: &std::path::Path) -> Result<(), std::io::Error> {
+/*fn compile_nut(file_source_path: &std::path::Path) -> Result<(), std::io::Error> {
 	let bbsq_path = std::env::current_dir().unwrap().join("adams_kit").join("bbsq.exe"); 
 
 	let bbsq_out = std::process::Command::new(&bbsq_path)
@@ -55,7 +52,7 @@ fn compile_nut(file_source_path: &std::path::Path) -> Result<(), std::io::Error>
 	println!("bbsq: {:?}", bbsq_out);
 
 	return Ok(())
-}
+}*/
 
 fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path, delete_cnuts: bool) -> i32{
 	//Return 0 = Ok
@@ -119,35 +116,43 @@ fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path, de
 }
 
 fn export_mod (mod_source_path: &std::path::Path, target_dir: &std::path::Path, compile: bool, delete_nuts: bool) -> Result<(), std::io::Error>{
+	let taros_compile = std::env::current_dir().unwrap().join("adams_kit").join("taros_masscompile.bat");
 	let mut mod_target_path = target_dir.join(mod_source_path.file_stem().unwrap());
 	mod_target_path.set_extension("zip");
 	println!("file: {:?}", mod_target_path);
 	let mod_target_file = std::fs::File::create(mod_target_path).unwrap();
 	let mut mod_target_zip = zip::ZipWriter::new(&mod_target_file);
 
+	if compile {
+		let _compile_out = std::process::Command::new(&taros_compile)
+									.arg(&mod_source_path.to_str().unwrap())
+									.output()
+									.expect("Failed to find bbsq (has the file been moved?)");
+	}
+
 	for walk_file in walkdir::WalkDir::new(&mod_source_path){
 		let walk_file_path = walk_file.as_ref().unwrap().path();
 
 		if walk_file_path.is_file() {
 
-			if compile {
-				match compile_nut(walk_file_path) {
-					Ok(()) => (),
-					Err(error) => return Err(error),
-				}
-
-				let mut walk_cnut_path = walk_file_path.to_owned();
-				walk_cnut_path.set_extension("cnut");
-				mod_target_zip.start_file(walk_cnut_path.strip_prefix(&mod_source_path).unwrap().to_str().unwrap(),
-										  zip::write::FileOptions::default())?;
-				mod_target_zip.write(&std::fs::read(walk_cnut_path).unwrap())?;
-
-			}
-
-			if !delete_nuts {
+			if walk_file_path.extension().unwrap().to_str().unwrap() != "nut" {
 				mod_target_zip.start_file(walk_file_path.strip_prefix(&mod_source_path).unwrap().to_str().unwrap(),
 										  zip::write::FileOptions::default())?;
 				mod_target_zip.write(&std::fs::read(walk_file_path).unwrap())?;
+			} else {
+				if !compile || !delete_nuts {
+					mod_target_zip.start_file(walk_file_path.strip_prefix(&mod_source_path).unwrap().to_str().unwrap(),
+											  zip::write::FileOptions::default())?;
+					mod_target_zip.write(&std::fs::read(walk_file_path).unwrap())?;
+				}
+			}
+			if compile {
+				if walk_file_path.extension().unwrap().to_str().unwrap() == "cnut" {
+					match std::fs::remove_file(&walk_file_path) {
+						Ok(()) => (),
+						Err(error) => return Err(error),
+					}
+				}
 			}
 		}
 	}
