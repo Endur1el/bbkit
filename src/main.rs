@@ -82,31 +82,28 @@ fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path, de
 	for file in walkdir::WalkDir::new(&imported_mod_path){ //Walk through all files in unzipped folder
 		let file_path = file.unwrap().path().to_owned();
 
-		if file_path.is_dir() {
-			continue;
-		}
+		if file_path.is_file() {
+			if file_path.extension().unwrap().eq("cnut") {
+				let mut file_target_path = file_path.clone();
+				file_target_path.set_extension("nut");
 
-		if file_path.extension().unwrap().eq("cnut") {
-
-			let mut file_target_path = file_path.clone();
-			file_target_path.set_extension("nut");
-
-			match decompile_cnut(&file_path, &file_target_path){
+				match decompile_cnut(&file_path, &file_target_path){
 					Ok(()) => (),
 					Err(error) => {
 						println!("Failed to decompile cnut: {}", error);
 						return 3;
-						}
+					}
 				}
 
 
-			if delete_cnuts {
-				match std::fs::remove_file(file_path){
-					Ok(()) => (),
-					Err(error) => {
-						println!("Failed to delete file: {}", error);
-						return 3;
+				if delete_cnuts {
+					match std::fs::remove_file(file_path){
+						Ok(()) => (),
+						Err(error) => {
+							println!("Failed to delete file: {}", error);
+							return 3;
 						}
+					}
 				}
 			}
 		}
