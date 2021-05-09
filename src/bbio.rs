@@ -57,12 +57,12 @@ pub fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path
 
 	let mut archive = match zip::ZipArchive::new(std::fs::File::open(mod_file_path)?) {
 		Ok(zip) => zip,
-		Err(_) => return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to  create zip")),
+		Err(_) => return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to create zip")),
 	};
 
 	match archive.extract(&imported_mod_path){
 		Ok(()) => (),
-		Err(_) => return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to  extract zip")),
+		Err(_) => return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to extract zip")),
 	}
 
 
@@ -70,13 +70,15 @@ pub fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path
 		let file_path = file?.path().to_owned();
 
 		if file_path.is_file() {
-			if file_path.extension().unwrap().eq("cnut") {
-				let mut file_target_path = file_path.clone();
-				file_target_path.set_extension("nut");
-				decompile_cnut(&file_path, &file_target_path)?;
+			if let Some(extension) = file_path.extension() {
+				if extension.eq("cnut") {
+					let mut file_target_path = file_path.clone();
+					file_target_path.set_extension("nut");
+					decompile_cnut(&file_path, &file_target_path)?;
 
-				if delete_cnuts {
-					std::fs::remove_file(file_path)?;
+					if delete_cnuts {
+						std::fs::remove_file(file_path)?;
+					}
 				}
 			}
 		}
