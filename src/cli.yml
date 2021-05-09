@@ -7,6 +7,10 @@ subcommands:
     - config:
         about: Get current program configuration
         alias: c
+        args:
+            - clear:
+                help: Optional argument to clear configuration
+                short: c
     - set_work_dir:
         about: Set the working directory for all your mods
         alias: wd
@@ -83,6 +87,6 @@ subcommands:
             - keep_cnuts:
                 help: Keep the cnut files undeleted in working directory
                 short: kc
-    - open_log:
+    - log:
         about: Opens Battle Brothers Log
         alias: l
