@@ -64,3 +64,9 @@ pub fn set_config(new_config: Config, force: bool) -> std::io::Result<()> {
 
 	return Ok(());
 }
+
+impl std::fmt::Display for Config {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		write!(f, "Working Directory: {:?}\nCurrent Mod Directory: {:?}\nExport Directory: {:?}", self.work_dir, self.mod_dir, self.export_dir)
+	}
+}

@@ -1,0 +1,88 @@
+---
+name: End's BB Modkit
+version: "0.1"
+author: Enduriel <endur1el@protonmail.com>
+about: TODO
+subcommands:
+    - config:
+        about: Get current program configuration
+        alias: c
+    - set_work_dir:
+        about: Set the working directory for all your mods
+        alias: wd
+        args:
+            - directory:
+                help: The directory containing all the mods you are working on
+                short: d
+                takes_value: true
+                required: true
+    - set_export_dir:
+        about: Set the directory to export mods to
+        alias: ed
+        args:
+            - directory:
+                short: d
+                takes_value: true
+                help: The directory to export mods to
+                required: true
+    - set_work_mod:
+        about: Set the mod you are currently working on to shorten other commands
+        alias: wm
+        args:
+            - directory:
+                help: The directory of the mod you are currently working on (the folder containing the scripts folder)
+                short: d
+                takes_value: true
+                required: true
+    - set_game_install:
+        about: Manually set the game install folder if finding it automatically doesn't work
+        alias: gi
+        args:
+            - directory:
+                help: The game directory, "Battle Brothers", containing the data directory
+                short: d
+                takes_value: true
+                required: true
+    - update:
+        about: Update the version of the mod in your data folder
+        alias: u
+        args:
+            - mod:
+                help: Set the mod folder to update
+                short: m
+                takes_value: true
+            - compile:
+                help: Compile the mod to cnuts using Taro's mass_compile
+                short: c
+            - delete_nuts:
+                help: Delete the nuts after compiling (does nothing if not compiling)
+                short: dn
+    - export:
+        about: Export the mod to 
+        alias: e
+        args:
+            - mod:
+                help: Set the mod folder to update
+                short: m
+                takes_value: true
+            - export_dir:
+                help: set export directory if don't want to use default
+                short: ed
+                takes_value: true
+            - compile:
+                help: Compile the mod to cnuts using Taro's mass_compile
+                short: c
+            - delete_nuts:
+                help: Delete the nuts after compiling (does nothing if not compiling)
+                short: dn
+    - import:
+        about: Import a new mod and decompile it if necessary, requires path of mod
+        alias: i
+        takes_value: true
+        args:
+            - keep_cnuts:
+                help: Keep the cnut files undeleted in working directory
+                short: kc
+    - open_log:
+        about: Opens Battle Brothers Log
+        alias: l
