@@ -1,4 +1,6 @@
 use crate::Write;
+use crate::File;
+use crate::Path;
 
 pub fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &std::path::Path) -> Result<(), std::io::Error> {
 	let nutcracker_path = std::env::current_dir().unwrap().join("adams_kit").join("nutcracker.exe");
@@ -132,6 +134,13 @@ pub fn export_mod (mod_source_path: &std::path::Path, target_dir: &std::path::Pa
 	mod_target_zip.finish()?;
 
 	return Ok(());
+}
+
+pub fn delete_mod (mod_source_path: &Path, target_dir: &Path) -> std::io::Result<()> {
+	let mut mod_delete_path = target_dir.join(mod_source_path.file_stem().unwrap());
+	mod_delete_path.set_extension("zip");
+	std::fs::remove_file(mod_delete_path)?;
+	Ok(())
 }
 
 pub fn open_log () ->  Result<(), std::io::Error> {

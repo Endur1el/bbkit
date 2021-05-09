@@ -111,7 +111,9 @@ fn main() {
 			}
 			println!("{}", cli_import(mod_dir, work_dir, delete_cnuts));
 		}
-		Some("delete") => {}
+		Some("delete") => {
+			println!("{}", cli_delete());
+		}
 		Some("log") => {println!("{}", cli_log());}
 		Some(_) | None => {println!("Unknown command, use -h for help");}
 	}
@@ -257,6 +259,28 @@ fn cli_import(mod_dir_option: Option<&str>, work_dir_option: Option<&str>, delet
 		Err(error) => return format!("Error Importing mod: {:?}", error),
 	}
 
+}
+
+fn cli_delete() -> String {
+	let config = match config::get_config() {
+		Ok(config) => (config),
+		Err(error) => return format!("Error getting config: {:?}", error),
+	};
+
+	let mod_dir_path = match config.mod_dir.as_ref() {
+		Some(string) => Path::new(string),
+		None => return format!("No mod directory in config, use subcommand set_mod_dir to set mod directory or add -m argument when using export or update"),
+	};
+
+	let game_dir_path = match config.game_dir.as_ref() {
+		Some(string) => Path::new(string),
+		None => return format!("No game directory in config, use subcommand set_game_dir to set game directory"),
+	};
+
+	match bbio::delete_mod(mod_dir_path, game_dir_path) {
+		Ok(()) => return "Mod deleted from data folder".to_string(),
+		Err(error) => return format!("Error deleting mod: {:?}", error),
+	}
 }
 
 fn cli_log() -> String {
