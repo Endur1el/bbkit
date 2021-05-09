@@ -9,17 +9,15 @@ mod bbio;
 fn main() {
 	let yaml_config = clap::load_yaml!("cli.yml");
 	let matches = clap::App::from_yaml(yaml_config).get_matches();
-	println!("Matches: {:?}", matches.subcommand_name());
 
 	match matches.subcommand_name() {
 		Some("config") => {
-			let subcommand_matches = matches.subcommand_matches("config");
-			if subcommand_matches.is_none() {
-				println!("{}", cli_config(false))
+			//safe to unwrap as is only None if "config" isn't the given subcommand
+			let subcommand_matches = matches.subcommand_matches("config").unwrap(); 
+			if subcommand_matches.is_present("clear") {
+				println!("{}", cli_config(true))
 			} else {
-				if subcommand_matches.unwrap().is_present("clear"){ //Should always be true as it's the only argument
-					println!("{}", cli_config(true));
-				}
+				println!("{}", cli_config(false));
 			}
 		}
 		Some("set_work_dir") => {
@@ -62,7 +60,7 @@ fn main() {
 				if subcommand_matches.is_present("compile") {
 					compile = true;
 				}
-				if subcommand_matches.is_present("delete_nuts") {
+				if subcommand_matches.is_present("remove_nuts") {
 					delete_nuts = true;
 				}
 			}
@@ -87,8 +85,8 @@ fn main() {
 				if subcommand_matches.is_present("compile") {
 					compile = true;
 				}
-				if subcommand_matches.is_present("delete_nuts") {
-					delete_nuts = false;
+				if subcommand_matches.is_present("remove_nuts") {
+					delete_nuts = true;
 				}
 			}
 			println!("{}", cli_export(mod_dir, export_dir, compile, delete_nuts));
@@ -111,9 +109,9 @@ fn main() {
 					delete_cnuts = false;
 				}
 			}
-			println!("{:?}", mod_dir);
 			println!("{}", cli_import(mod_dir, work_dir, delete_cnuts));
 		}
+		Some("delete") => {}
 		Some("log") => {println!("{}", cli_log());}
 		Some(_) | None => {println!("Unknown command, use -h for help");}
 	}
@@ -170,7 +168,7 @@ fn cli_set_mod_dir(mod_dir_str: &str) -> String {
 		Ok(()) => (),
 		Err(error) => return format!("Error setting config: {:?}", error),
 	};
-	return format!("Set Export directory to: {}", &mod_dir_str);
+	return format!("Set Mod directory to: {}", &mod_dir_str);
 }
 
 fn cli_set_game_dir(game_dir_str: &str) -> String {

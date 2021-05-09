@@ -1,6 +1,6 @@
 ---
 name: End's BB Modkit
-version: "0.1"
+version: "0.0.2"
 author: Enduriel <endur1el@protonmail.com>
 about: TODO
 subcommands:
@@ -58,11 +58,11 @@ subcommands:
             - compile:
                 help: Compile the mod to cnuts using Taro's mass_compile
                 short: c
-            - delete_nuts:
+            - remove_nuts:
                 help: Delete the nuts after compiling (does nothing if not compiling)
-                short: dn
+                short: r
     - export:
-        about: Export the mod to 
+        about: Export the mod to folder
         alias: e
         args:
             - mod:
@@ -71,14 +71,14 @@ subcommands:
                 takes_value: true
             - export_dir:
                 help: set export directory if don't want to use default
-                short: ed
+                short: d
                 takes_value: true
             - compile:
                 help: Compile the mod to cnuts using Taro's mass_compile
                 short: c
-            - delete_nuts:
+            - remove_nuts:
                 help: Delete the nuts after compiling (does nothing if not compiling)
-                short: dn
+                short: r
     - import:
         about: Import a new mod and decompile it if necessary, requires path of mod
         alias: i
@@ -91,11 +91,14 @@ subcommands:
                 required : true
             - work_dir:
                 help: Working directory to import the mod into
-                short: wd
+                short: d
                 takes_value: true
             - keep_cnuts:
                 help: Keep the cnut files undeleted in working directory
-                short: kc
+                short: k
+    - delete:
+        about: Remove the current mod from game/data folder
+        alias: d
     - log:
         about: Opens Battle Brothers Log
         alias: l

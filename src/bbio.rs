@@ -14,18 +14,18 @@ pub fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &st
 		}
 	}
 
-	let bbsq_out = std::process::Command::new(&bbsq_path)
+	let _bbsq_out = std::process::Command::new(&bbsq_path)
 									.args(&["-d", &temp_file_path.to_str().unwrap()])
 									.output()
 									.expect("Failed to find bbsq (has the file been moved?)");
 
-	let nutcracker_out = std::process::Command::new("cmd")
+	let _nutcracker_out = std::process::Command::new("cmd")
 										  .args(&["/C", &nutcracker_path.to_str().unwrap()])
 										  .args(&[&temp_file_path.to_str().unwrap(), ">", file_target_path.to_str().unwrap()])
 										  .output()
 										  .expect("Failed to run nutcracker.exe (has the file been moved?)");
 
-	println!("bbsq: {:?} nutcracker: {:?}", bbsq_out, nutcracker_out);
+	//println!("bbsq: {:?} nutcracker: {:?}", bbsq_out, nutcracker_out);
 
 	match std::fs::remove_file(temp_file_path) {
 				Ok(()) => (),
@@ -91,15 +91,16 @@ pub fn export_mod (mod_source_path: &std::path::Path, target_dir: &std::path::Pa
 	let taros_compile = std::env::current_dir().unwrap().join("adams_kit").join("taros_masscompile.bat");
 	let mut mod_target_path = target_dir.join(mod_source_path.file_stem().unwrap());
 	mod_target_path.set_extension("zip");
-	println!("file: {:?}", mod_target_path);
+	println!("{:?}", mod_target_path);
 	let mod_target_file = std::fs::File::create(mod_target_path).unwrap();
 	let mut mod_target_zip = zip::ZipWriter::new(&mod_target_file);
 
 	if compile {
-		let _compile_out = std::process::Command::new(&taros_compile)
-									.arg(&mod_source_path.to_str().unwrap())
+		let _compile_out = std::process::Command::new(&taros_compile.as_os_str())
+									.arg(&mod_source_path.join("scripts").as_os_str())
 									.output()
-									.expect("Failed to find bbsq (has the file been moved?)");
+									.expect("Failed to find taros_masscompile.bat (has the file been moved?)");
+		println!("{:#?}", _compile_out);
 	}
 
 	for walk_file in walkdir::WalkDir::new(&mod_source_path){
@@ -107,7 +108,7 @@ pub fn export_mod (mod_source_path: &std::path::Path, target_dir: &std::path::Pa
 
 		if walk_file_path.is_file() {
 
-			if walk_file_path.extension().unwrap().to_str().unwrap() != "nut" {
+			if walk_file_path.extension().unwrap().to_os_string() != "nut" {
 				mod_target_zip.start_file(walk_file_path.strip_prefix(&mod_source_path).unwrap().to_str().unwrap(),
 										  zip::write::FileOptions::default())?;
 				mod_target_zip.write(&std::fs::read(walk_file_path).unwrap())?;
@@ -119,7 +120,7 @@ pub fn export_mod (mod_source_path: &std::path::Path, target_dir: &std::path::Pa
 				}
 			}
 			if compile {
-				if walk_file_path.extension().unwrap().to_str().unwrap() == "cnut" {
+				if walk_file_path.extension().unwrap().to_os_string() == "cnut" {
 					match std::fs::remove_file(&walk_file_path) {
 						Ok(()) => (),
 						Err(error) => return Err(error),
