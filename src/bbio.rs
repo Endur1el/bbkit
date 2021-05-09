@@ -51,62 +51,38 @@ pub fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &st
 	return Ok(())
 }*/
 
-pub fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path, delete_cnuts: bool) -> i32{
-	//Return 0 = Ok
-	//1 = Error before file changes
-	//2 = Error after file changes
-	//3 = Error with deleting clutter files
+pub fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path, delete_cnuts: bool) -> std::io::Result<()>{
 
 	let imported_mod_path = target_dir.join(mod_file_path.file_stem().unwrap());
 
-	let mut archive = match zip::ZipArchive::new(std::fs::File::open(mod_file_path).unwrap()) {
+	let mut archive = match zip::ZipArchive::new(std::fs::File::open(mod_file_path)?) {
 		Ok(zip) => zip,
-		Err(error) => {
-			println!("Error: {}", error);
-			return 1;
-		}
+		Err(_) => return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to  create zip")),
 	};
 
 	match archive.extract(&imported_mod_path){
-		Ok(()) => println!("Unzipped successfully"),
-		Err(error) => {
-			println!("Faild to Extract zip: {}", error);
-			return 2;
-		}
+		Ok(()) => (),
+		Err(_) => return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to  extract zip")),
 	}
 
 
 	for file in walkdir::WalkDir::new(&imported_mod_path){ //Walk through all files in unzipped folder
-		let file_path = file.unwrap().path().to_owned();
+		let file_path = file?.path().to_owned();
 
 		if file_path.is_file() {
 			if file_path.extension().unwrap().eq("cnut") {
 				let mut file_target_path = file_path.clone();
 				file_target_path.set_extension("nut");
-
-				match decompile_cnut(&file_path, &file_target_path){
-					Ok(()) => (),
-					Err(error) => {
-						println!("Failed to decompile cnut: {}", error);
-						return 3;
-					}
-				}
-
+				decompile_cnut(&file_path, &file_target_path)?;
 
 				if delete_cnuts {
-					match std::fs::remove_file(file_path){
-						Ok(()) => (),
-						Err(error) => {
-							println!("Failed to delete file: {}", error);
-							return 3;
-						}
-					}
+					std::fs::remove_file(file_path)?;
 				}
 			}
 		}
 	}
 
-	return 0
+	return Ok(())
 }
 
 pub fn export_mod (mod_source_path: &std::path::Path, target_dir: &std::path::Path, compile: bool, delete_nuts: bool) -> Result<(), std::io::Error>{

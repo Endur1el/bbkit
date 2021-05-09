@@ -30,7 +30,7 @@ impl Config {
 			result.export_dir = new_config.export_dir.clone();
 		}
 		if new_config.game_dir != None {
-			result.export_dir = new_config.export_dir.clone();
+			result.game_dir = new_config.game_dir.clone();
 		}
 		return result;
 	}

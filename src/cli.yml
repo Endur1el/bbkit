@@ -29,18 +29,18 @@ subcommands:
                 takes_value: true
                 help: The directory to export mods to
                 required: true
-    - set_work_mod:
+    - set_mod_dir:
         about: Set the mod you are currently working on to shorten other commands
-        alias: wm
+        alias: md
         args:
             - directory:
                 help: The directory of the mod you are currently working on (the folder containing the scripts folder)
                 short: d
                 takes_value: true
                 required: true
-    - set_game_install:
+    - set_game_dir:
         about: Manually set the game install folder if finding it automatically doesn't work
-        alias: gi
+        alias: gd
         args:
             - directory:
                 help: The game directory, "Battle Brothers", containing the data directory
@@ -84,6 +84,15 @@ subcommands:
         alias: i
         takes_value: true
         args:
+            - mod:
+                help: Mod zip file to import
+                short: m
+                takes_value: true
+                required : true
+            - work_dir:
+                help: Working directory to import the mod into
+                short: wd
+                takes_value: true
             - keep_cnuts:
                 help: Keep the cnut files undeleted in working directory
                 short: kc

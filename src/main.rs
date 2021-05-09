@@ -47,12 +47,73 @@ fn main() {
 			println!("{}", cli_set_game_dir(dir));
 		}
 		Some("update") => {
-			let subcommand_matches = matches.subcommand_matches("set_mod_dir");
+			
+			let subcommand_matches = matches.subcommand_matches("update");
+			let mut mod_dir: Option<&str> = None;
+			let mut compile = false;
+			let mut delete_nuts = false;
+
+			if subcommand_matches.is_some() {
+				//Safe to use unwraps because we check if args exist
+				let subcommand_matches = subcommand_matches.unwrap();
+				if subcommand_matches.is_present("mod") {
+					mod_dir = Some(subcommand_matches.value_of("mod").unwrap());
+				}
+				if subcommand_matches.is_present("compile") {
+					compile = true;
+				}
+				if subcommand_matches.is_present("delete_nuts") {
+					delete_nuts = true;
+				}
+			}
+			println!("{}", cli_update(mod_dir, compile, delete_nuts));
 		}
 		Some("export") => {
+			let subcommand_matches = matches.subcommand_matches("export");
+			let mut mod_dir: Option<&str> = None;
+			let mut export_dir: Option<&str> = None;
+			let mut compile = false;
+			let mut delete_nuts = false;
 
+			if subcommand_matches.is_some() {
+				//Safe to use unwraps because we check if args exist
+				let subcommand_matches = subcommand_matches.unwrap();
+				if subcommand_matches.is_present("mod") {
+					mod_dir = Some(subcommand_matches.value_of("mod").unwrap());
+				}
+				if subcommand_matches.is_present("export_dir") {
+					export_dir = Some(subcommand_matches.value_of("export_dir").unwrap());
+				}
+				if subcommand_matches.is_present("compile") {
+					compile = true;
+				}
+				if subcommand_matches.is_present("delete_nuts") {
+					delete_nuts = false;
+				}
+			}
+			println!("{}", cli_export(mod_dir, export_dir, compile, delete_nuts));
 		}
+		Some("import") => {
+			let subcommand_matches = matches.subcommand_matches("import");
+			let mut mod_dir: Option<&str> = None;
+			let mut work_dir: Option<&str> = None;
+			let mut delete_cnuts = true;
 
+			if subcommand_matches.is_some() {
+				let subcommand_matches = subcommand_matches.unwrap();
+				if subcommand_matches.is_present("mod") {
+					mod_dir = Some(subcommand_matches.value_of("mod").unwrap())
+				}
+				if subcommand_matches.is_present("work_dir") {
+					work_dir = Some(subcommand_matches.value_of("work_dir").unwrap())
+				}
+				if subcommand_matches.is_present("keep_cnuts") { // Codebase needs to shift to keep rather than delete
+					delete_cnuts = false;
+				}
+			}
+			println!("{:?}", mod_dir);
+			println!("{}", cli_import(mod_dir, work_dir, delete_cnuts));
+		}
 		Some("log") => {println!("{}", cli_log());}
 		Some(_) | None => {println!("Unknown command, use -h for help");}
 	}
@@ -121,7 +182,7 @@ fn cli_set_game_dir(game_dir_str: &str) -> String {
 		Ok(()) => (),
 		Err(error) => return format!("Error setting config: {:?}", error),
 	};
-	return format!("Set Export directory to: {}", &game_dir_str);
+	return format!("Set Game directory to: {}", &game_dir_str);
 }
 
 
@@ -170,6 +231,34 @@ fn cli_export(mod_dir_option: Option<&str>, export_dir_option: Option<&str>, com
 		Ok(()) => return "Mod exported successfully".to_string(),
 		Err(error) => return format!("Error exporting mod: {:?}", error),
 	}
+}
+
+fn cli_import(mod_dir_option: Option<&str>, work_dir_option: Option<&str>, delete_cnuts: bool) -> String{
+	let config = match config::get_config() {
+		Ok(config) => (config),
+		Err(error) => return format!("Error getting config: {:?}", error),
+	};
+
+	let mod_dir_path = match mod_dir_option {
+		Some(string) => Path::new(string),
+		None => return format!("No mod directory in config, use subcommand set_mod_dir to set mod directory or add -m argument when using export or update"),
+	};
+
+	let work_dir_path = match work_dir_option {
+		Some(string) => Path::new(string),
+		None => {
+			match config.work_dir.as_ref() {
+				Some(work_string) => Path::new(work_string),
+				None => return format!("No work directory in config, use subcommand set_work_dir to set work directory or add -wd argument when using import"),
+			}
+		}
+	};
+
+	match bbio::import_mod(mod_dir_path, work_dir_path, delete_cnuts) {
+		Ok(()) => return "Mod imported".to_string(),
+		Err(error) => return format!("Error Importing mod: {:?}", error),
+	}
+
 }
 
 fn cli_log() -> String {
