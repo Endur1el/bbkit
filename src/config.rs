@@ -6,14 +6,16 @@ use crate::Read;
 pub struct Config {
     pub work_dir: Option<String>,
     pub mod_dir: Option<String>,
-    pub export_dir: Option<String>
+    pub export_dir: Option<String>,
+    pub game_dir: Option<String>
 }
 impl Config {
 	pub fn new() -> Config {
 		Config {
 		work_dir: None,
 		mod_dir: None,
-		export_dir: None
+		export_dir: None,
+		game_dir: None,
 		}
 	}
 	pub fn merge(&self, new_config: &Config) -> Config{
@@ -27,7 +29,15 @@ impl Config {
 		if new_config.export_dir != None {
 			result.export_dir = new_config.export_dir.clone();
 		}
+		if new_config.game_dir != None {
+			result.export_dir = new_config.export_dir.clone();
+		}
 		return result;
+	}
+}
+impl std::fmt::Display for Config {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		write!(f, "Working Directory: {:?}\nCurrent Mod Directory: {:?}\nExport Directory: {:?}\nGame Directory: {:?}", self.work_dir, self.mod_dir, self.export_dir, self.game_dir)
 	}
 }
 
@@ -65,8 +75,3 @@ pub fn set_config(new_config: Config, force: bool) -> std::io::Result<()> {
 	return Ok(());
 }
 
-impl std::fmt::Display for Config {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-		write!(f, "Working Directory: {:?}\nCurrent Mod Directory: {:?}\nExport Directory: {:?}", self.work_dir, self.mod_dir, self.export_dir)
-	}
-}
