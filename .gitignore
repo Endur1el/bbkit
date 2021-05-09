@@ -1,2 +1,4 @@
 /target
 /adams_kit
+cargo.lock
+config.yml
