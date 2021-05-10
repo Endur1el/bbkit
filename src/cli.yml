@@ -1,8 +1,8 @@
 ---
 name: End's BB Modkit
-version: "0.0.2"
+version: "0.1.0"
 author: Enduriel <endur1el@protonmail.com>
-about: https://github.com
+about: https://github.com/Endur1el/bbkit
 subcommands:
     - config:
         about: Get current program configuration
