@@ -2,7 +2,7 @@
 name: End's BB Modkit
 version: "0.0.2"
 author: Enduriel <endur1el@protonmail.com>
-about: TODO
+about: https://github.com
 subcommands:
     - config:
         about: Get current program configuration
@@ -62,7 +62,7 @@ subcommands:
                 help: Delete the nuts after compiling (does nothing if not compiling)
                 short: r
     - export:
-        about: Export the mod to folder
+        about: Export the mod to a folder
         alias: e
         args:
             - mod:
