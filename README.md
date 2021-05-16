@@ -47,7 +47,7 @@ Commands are called in the format: `bbkit [SUBCOMMAND] -[SUBCOMMAND_ARGS]`
 * `set_work_dir [wd]` Set working directory (folder containing all mods you work on)
   * `-directory [-d] {path} (required)` directory to save
 * `set_export_dir [ed]` Set export directory (folder to export completed mods to)
- * `-directory [-d] {path} (required)` directory to save
+  * `-directory [-d] {path} (required)` directory to save
 * `set_mod_dir [md]` Set current mod directory (folder of the mod you are currently working on to shorten other commands, eg: `bbkit u` rather than `bbkit u -d path/to/current/mod`)
   * `-directory [-d] {path} (required)` directory to save
 * `set_game_dir [gd]` Set game directory (game folder called "Battle Brothers", containing a /data directory)
@@ -72,7 +72,7 @@ Commands are called in the format: `bbkit [SUBCOMMAND] -[SUBCOMMAND_ARGS]`
 
 `bbkit wd -d D:/Other/Modding/BBros` to set general battle brothers working directory to BBros\
 `bbkit md -d D:/Other/Modding/BBros/mod_EIMO` to set current mod to mod_EIMO\
-`bbkit gd -d "D:SteamLibrary/steamapps/common/Battle Brothers"` to set game directory to correct folder Make sure to use "" if you have spaces in the path (as you always will with game_directory)\
+`bbkit gd -d "D:SteamLibrary/steamapps/common/Battle Brothers"` to set game directory to correct folder. Make sure to use "" if you have spaces in the path (as you always will with game_directory)\
 `bbkit ed -d D:/Other/Modding/BBros/Export` to set export directory to Export inside of BBros (can be anywhere)\
 `bbkit u` to update mod_EIMO version inside of Battle Brothers/data to whatever is in D:/Other/Modding/BBros/mod_EIMO\
 `bbkit d` to delete the mod_EIMO version inside of Battle Brothers/data\
