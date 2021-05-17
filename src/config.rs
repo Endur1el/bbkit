@@ -59,16 +59,11 @@ pub fn get_config() -> std::io::Result<Config> {
 
 pub fn set_config(new_config: Config, force: bool) -> std::io::Result<()> {
 	let config_path = Path::new("config.yml");
-	let mut config;
-	
-	if force {
-		config = new_config.clone();
-	} else {
-		config = get_config()?;
-		config = config.merge(&new_config);
-	}
-	
 	let mut config_file = File::create(config_path)?;
+	let config = match force {
+		true => new_config.clone(),
+		false => get_config()?.merge(&new_config),
+	};
 	let config_contents = serde_yaml::to_string(&config).unwrap();
 	config_file.write(config_contents.as_bytes())?;
 
