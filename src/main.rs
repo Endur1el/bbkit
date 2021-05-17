@@ -11,8 +11,8 @@ fn main() {
 	let matches = clap::App::from_yaml(yaml_config).get_matches();
 
 	match matches.subcommand_name() {
+		// Unwraps in here are safe because the subcommand_matches for a command exist if that subcommand is the current branch in the match.
 		Some("config") => {
-			//safe to unwrap as is only None if "config" isn't the given subcommand
 			let subcommand_matches = matches.subcommand_matches("config").unwrap(); 
 			if subcommand_matches.is_present("clear") {
 				println!("{}", cli_config(true))
@@ -21,100 +21,74 @@ fn main() {
 			}
 		}
 		Some("set_work_dir") => {
-			//Safe to use unwraps because directory is a required argument
 			let subcommand_matches = matches.subcommand_matches("set_work_dir").unwrap(); 
 			let dir = subcommand_matches.value_of("directory").unwrap(); 
 			println!("{}", cli_set_work_dir(dir));
 		}
 		Some("set_export_dir") => {
-			//Safe to use unwraps because directory is a required argument
 			let subcommand_matches = matches.subcommand_matches("set_export_dir").unwrap(); 
 			let dir = subcommand_matches.value_of("directory").unwrap(); 
 			println!("{}", cli_set_export_dir(dir));
 		}
 		Some("set_mod_dir") => {
-			//Safe to use unwraps because directory is a required argument
 			let subcommand_matches = matches.subcommand_matches("set_mod_dir").unwrap(); 
 			let dir = subcommand_matches.value_of("directory").unwrap(); 
 			println!("{}", cli_set_mod_dir(dir));
 		}
 		Some("set_game_dir") => {
-			//Safe to use unwraps because directory is a required argument
 			let subcommand_matches = matches.subcommand_matches("set_game_dir").unwrap(); 
 			let dir = subcommand_matches.value_of("directory").unwrap(); 
 			println!("{}", cli_set_game_dir(dir));
 		}
 		Some("update") => {
-			
-			let subcommand_matches = matches.subcommand_matches("update");
+
+			let subcommand_matches = matches.subcommand_matches("update").unwrap();
 			let mut mod_dir: Option<&str> = None;
 			let mut compile = false;
 			let mut delete_nuts = false;
-
-			if subcommand_matches.is_some() {
-				//Safe to use unwraps because we check if args exist
-				let subcommand_matches = subcommand_matches.unwrap();
-				if subcommand_matches.is_present("mod") {
-					mod_dir = Some(subcommand_matches.value_of("mod").unwrap());
-				}
-				if subcommand_matches.is_present("compile") {
-					compile = true;
-				}
-				if subcommand_matches.is_present("remove_nuts") {
-					delete_nuts = true;
-				}
+			if subcommand_matches.is_present("mod") {
+				mod_dir = Some(subcommand_matches.value_of("mod").unwrap());
 			}
+			if subcommand_matches.is_present("compile") { compile = true }
+			if subcommand_matches.is_present("remove_nuts") { delete_nuts = true}
 			println!("{}", cli_update(mod_dir, compile, delete_nuts));
 		}
 		Some("export") => {
-			let subcommand_matches = matches.subcommand_matches("export");
+			let subcommand_matches = matches.subcommand_matches("export").unwrap();
 			let mut mod_dir: Option<&str> = None;
 			let mut export_dir: Option<&str> = None;
 			let mut compile = false;
 			let mut delete_nuts = false;
 
-			if subcommand_matches.is_some() {
-				//Safe to use unwraps because we check if args exist
-				let subcommand_matches = subcommand_matches.unwrap();
-				if subcommand_matches.is_present("mod") {
-					mod_dir = Some(subcommand_matches.value_of("mod").unwrap());
-				}
-				if subcommand_matches.is_present("export_dir") {
-					export_dir = Some(subcommand_matches.value_of("export_dir").unwrap());
-				}
-				if subcommand_matches.is_present("compile") {
-					compile = true;
-				}
-				if subcommand_matches.is_present("remove_nuts") {
-					delete_nuts = true;
-				}
+			if subcommand_matches.is_present("mod") {
+				mod_dir = Some(subcommand_matches.value_of("mod").unwrap());
 			}
+			if subcommand_matches.is_present("export_dir") {
+				export_dir = Some(subcommand_matches.value_of("export_dir").unwrap());
+			}
+			if subcommand_matches.is_present("compile") { compile = true; }
+			if subcommand_matches.is_present("remove_nuts") { delete_nuts = true; }
 			println!("{}", cli_export(mod_dir, export_dir, compile, delete_nuts));
 		}
 		Some("import") => {
-			let subcommand_matches = matches.subcommand_matches("import");
+			let subcommand_matches = matches.subcommand_matches("import").unwrap();
 			let mut mod_dir: Option<&str> = None;
 			let mut work_dir: Option<&str> = None;
 			let mut delete_cnuts = true;
 
-			if subcommand_matches.is_some() {
-				let subcommand_matches = subcommand_matches.unwrap();
-				if subcommand_matches.is_present("mod") {
-					mod_dir = Some(subcommand_matches.value_of("mod").unwrap())
-				}
-				if subcommand_matches.is_present("work_dir") {
-					work_dir = Some(subcommand_matches.value_of("work_dir").unwrap())
-				}
-				if subcommand_matches.is_present("keep_cnuts") { // Codebase needs to shift to keep rather than delete
-					delete_cnuts = false;
-				}
+			if subcommand_matches.is_present("mod") {
+				mod_dir = Some(subcommand_matches.value_of("mod").unwrap())
+			}
+			if subcommand_matches.is_present("work_dir") {
+				work_dir = Some(subcommand_matches.value_of("work_dir").unwrap())
+			}
+			if subcommand_matches.is_present("keep_cnuts") { // Codebase needs to shift to keep rather than delete
+				delete_cnuts = false;
 			}
 			println!("{}", cli_import(mod_dir, work_dir, delete_cnuts));
 		}
-		Some("delete") => {
-			println!("{}", cli_delete());
-		}
-		Some("log") => {println!("{}", cli_log());}
+		Some("delete") => println!("{}", cli_delete()),
+		Some("log") => println!("{}", cli_log()),
 		Some(_) | None => {println!("Unknown command, use -h for help");}
 	}
 	

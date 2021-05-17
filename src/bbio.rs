@@ -2,7 +2,7 @@ use crate::Write;
 use crate::File;
 use crate::Path;
 
-pub fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &std::path::Path) -> Result<(), std::io::Error> {
+pub fn decompile_cnut (file_source_path: &Path, file_target_path: &Path) -> Result<(), std::io::Error> {
 	let nutcracker_path = std::env::current_dir().unwrap().join("adams_kit").join("nutcracker.exe");
 	let bbsq_path = std::env::current_dir().unwrap().join("adams_kit").join("bbsq.exe"); 
 	//Above two lines should be declared somewhere globaly and only once
@@ -53,7 +53,7 @@ pub fn decompile_cnut (file_source_path: &std::path::Path, file_target_path: &st
 	return Ok(())
 }*/
 
-pub fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path, delete_cnuts: bool) -> std::io::Result<()>{
+pub fn import_mod (mod_file_path: &Path, target_dir: &Path, delete_cnuts: bool) -> std::io::Result<()>{
 
 	let imported_mod_path = target_dir.join(mod_file_path.file_stem().unwrap());
 
@@ -89,12 +89,12 @@ pub fn import_mod (mod_file_path: &std::path::Path, target_dir: &std::path::Path
 	return Ok(())
 }
 
-pub fn export_mod (mod_source_path: &std::path::Path, target_dir: &std::path::Path, compile: bool, delete_nuts: bool) -> Result<(), std::io::Error>{
+pub fn export_mod (mod_source_path: &Path, target_dir: &Path, compile: bool, delete_nuts: bool) -> Result<(), std::io::Error>{
 	let taros_compile = std::env::current_dir().unwrap().join("adams_kit").join("taros_masscompile.bat");
 	let mut mod_target_path = target_dir.join(mod_source_path.file_stem().unwrap());
 	mod_target_path.set_extension("zip");
 	println!("{:?}", mod_target_path);
-	let mod_target_file = std::fs::File::create(mod_target_path).unwrap();
+	let mod_target_file = File::create(mod_target_path).unwrap();
 	let mut mod_target_zip = zip::ZipWriter::new(&mod_target_file);
 
 	if compile {
