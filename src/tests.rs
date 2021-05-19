@@ -1,7 +1,7 @@
 use crate::Path;
+use crate::Result;
 use blake2::{Blake2b, Digest};
 use std::fs;
-use crate::Result;
 
 fn get_file_hash(file_path: &Path) -> Result<String> {
 	let mut hash = Blake2b::new();
@@ -24,16 +24,20 @@ fn get_zip_hash(zip_path: &Path) -> Result<String> {
 
 fn get_hash(file_or_folder_path: &Path) -> Result<String> {
 	if file_or_folder_path.is_file() {
-		if file_or_folder_path.extension().unwrap().to_os_string() == "zip" {return get_zip_hash(file_or_folder_path)}
-		return get_file_hash(file_or_folder_path)
+		if file_or_folder_path.extension().unwrap().to_os_string() == "zip" {
+			return get_zip_hash(file_or_folder_path);
+		}
+		return get_file_hash(file_or_folder_path);
 	}
 	let mut hash = Blake2b::new();
-	for file in walkdir::WalkDir::new(&file_or_folder_path){
+	for file in walkdir::WalkDir::new(&file_or_folder_path) {
 		let file = file?.path().to_owned();
-		if file.is_dir() {continue;}
+		if file.is_dir() {
+			continue;
+		}
 		hash.update(get_file_hash(&file)?);
 	}
-	Ok(format!("{:x}", hash.finalize())) 
+	Ok(format!("{:x}", hash.finalize()))
 }
 
 #[test]
@@ -53,7 +57,7 @@ fn test_compile() {
 
 	run_test("mod_EIMO.zip", false, false);
 	run_test("mod_EIMO_c.zip", true, false);
-	run_test("mod_EIMO_c_r.zip", true, true);	
+	run_test("mod_EIMO_c_r.zip", true, true);
 }
 
 #[test]
@@ -73,7 +77,7 @@ fn test_decompile() {
 
 	run_test("mod_EIMO_original", "mod_EIMO.zip", false);
 	run_test("mod_EIMO_original", "mod_EIMO.zip", true);
-	
+
 	run_test("mod_EIMO_original", "mod_EIMO_c.zip", false);
 	run_test("mod_EIMO_unzip_c_k", "mod_EIMO_c.zip", true);
 
