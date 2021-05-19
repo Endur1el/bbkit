@@ -97,10 +97,14 @@ pub fn export_mod (mod_source_path: &Path, target_dir: &Path, compile: bool, del
 	let mut mod_target_zip = zip::ZipWriter::new(&mod_target_file);
 
 	if compile {
-		let _compile_out = std::process::Command::new(&taros_compile.as_os_str())
+		let compile_out = std::process::Command::new(&taros_compile.as_os_str())
 									.arg(&mod_source_path.join("scripts").as_os_str())
 									.output()
 									.expect("Failed to find taros_masscompile.bat (has the file been moved?)");
+		if !compile_out.stderr.is_empty() {
+			let error = String::from_utf8_lossy(&compile_out.stderr);
+			return Err(std::io::Error::new(std::io::ErrorKind::Other, error))
+		}
 	}
 
 	for walk_file in walkdir::WalkDir::new(&mod_source_path){

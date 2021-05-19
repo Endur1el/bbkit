@@ -58,7 +58,7 @@ Commands are called in the format: `bbkit [SUBCOMMAND] -[SUBCOMMAND_ARGS]`
   * `-remove_nuts [-r]` remove .nut files (ONLY DO THIS IF YOU ARE REDISTRIBUTING OVERHYPE CODE), does nothing if -c isn't also passed
 * `export [e]` export the mod to an easily accessible folder
   * `-mod [-m] {path} (default = mod_dir)` mod to export
-  * `-directory {path} (default = export_dir)` directory to export to
+  * `-directory [-d] {path} (default = export_dir)` directory to export to
   * `-compile [-c]` compile .nut files to .cnut (Should only be used if replacing vanilla files or using a lot of vanilla code in mod)
   * `-remove_nuts [-r]` remove .nut files (ONLY DO THIS IF YOU ARE REDISTRIBUTING OVERHYPE CODE), does nothing if -c isn't also passed
 * `import [i]` import a mod into your working directory (also works with .dat vanilla files)
