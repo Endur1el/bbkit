@@ -111,6 +111,8 @@ pub fn export_mod (mod_source_path: &Path, target_dir: &Path, compile: bool, del
 		let walk_file_path = walk_file.as_ref().unwrap().path();
 
 		if walk_file_path.is_file() {
+			// Get rid of desktop.ini manually as they were appearing in the zips
+			if walk_file_path.file_name().unwrap() == "desktop.ini" {continue;} //unwrap is fine as we check if file exists
 
 			if walk_file_path.extension().unwrap().to_os_string() != "nut" {
 				mod_target_zip.start_file(walk_file_path.strip_prefix(&mod_source_path).unwrap().to_str().unwrap(),
