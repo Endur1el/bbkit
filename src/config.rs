@@ -2,6 +2,7 @@ use crate::File;
 use crate::Path;
 use crate::Read;
 use crate::Write;
+use crate::Result;
 #[derive(serde::Deserialize, serde::Serialize, Clone, Debug)]
 pub struct Config {
 	pub work_dir: Option<String>,
@@ -41,34 +42,26 @@ impl std::fmt::Display for Config {
 	}
 }
 
-pub fn get_config() -> std::io::Result<Config> {
+pub fn get_config() -> Result<Config> {
 	let config_path = Path::new("config.yml");
 	let mut config = Config::new();
 	if config_path.exists() {
 		let mut config_file = File::open(config_path)?;
 		let mut config_contents = String::new();
 		config_file.read_to_string(&mut config_contents)?;
-		config = match serde_yaml::from_str(&config_contents) {
-			Ok(config_yaml) => config_yaml,
-			Err(_) => {
-				return Err(std::io::Error::new(
-					std::io::ErrorKind::Other,
-					"Config file corrupted, delete/fix config.yml",
-				))
-			}
-		}
+		config = serde_yaml::from_str(&config_contents)?;
 	}
 	return Ok(config);
 }
 
-pub fn set_config(new_config: Config, force: bool) -> std::io::Result<()> {
+pub fn set_config(new_config: Config, force: bool) -> Result<()> {
 	let config_path = Path::new("config.yml");
 	let mut config_file = File::create(config_path)?;
 	let config = match force {
 		true => new_config.clone(),
 		false => get_config()?.merge(&new_config),
 	};
-	let config_contents = serde_yaml::to_string(&config).unwrap();
+	let config_contents = serde_yaml::to_string(&config)?;
 	config_file.write(config_contents.as_bytes())?;
 
 	return Ok(());

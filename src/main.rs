@@ -111,16 +111,11 @@ fn cli() {
 
 fn cli_config(clear: bool) -> String {
 	if !clear {
-		let config = match config::get_config() {
-			Ok(config) => config,
-			Err(error) => return format!("Error importing config: {:?}", error),
-		};
+		let config = config::get_config().expect("Error importing config");
 		return config.to_string();
 	} else {
-		match config::set_config(config::Config::new(), true) {
-			Ok(()) => return "Cleared config".to_string(),
-			Err(error) => return format!("Error clearing config: {:?}", error),
-		}
+		config::set_config(config::Config::new(), true).expect("Error clearing config");
+		return "Cleared config".to_string();
 	}
 }
 
@@ -131,10 +126,7 @@ fn cli_set_work_dir(work_dir_str: &str) -> String {
 	}
 	let mut new_config = config::Config::new();
 	new_config.work_dir = Some(work_dir_str.to_string());
-	match config::set_config(new_config, false) {
-		Ok(()) => (),
-		Err(error) => return format!("Error setting config: {:?}", error),
-	};
+	config::set_config(new_config, false).expect("Error setting config");
 	return format!("Set working directory to: {}", &work_dir_str);
 }
 
@@ -145,10 +137,7 @@ fn cli_set_export_dir(export_dir_str: &str) -> String {
 	}
 	let mut new_config = config::Config::new();
 	new_config.export_dir = Some(export_dir_str.to_string());
-	match config::set_config(new_config, false) {
-		Ok(()) => (),
-		Err(error) => return format!("Error setting config: {:?}", error),
-	};
+	config::set_config(new_config, false).expect("Error setting config");
 	return format!("Set Export directory to: {}", &export_dir_str);
 }
 
@@ -159,10 +148,7 @@ fn cli_set_mod_dir(mod_dir_str: &str) -> String {
 	}
 	let mut new_config = config::Config::new();
 	new_config.mod_dir = Some(mod_dir_str.to_string());
-	match config::set_config(new_config, false) {
-		Ok(()) => (),
-		Err(error) => return format!("Error setting config: {:?}", error),
-	};
+	config::set_config(new_config, false).expect("Error setting config");
 	return format!("Set Mod directory to: {}", &mod_dir_str);
 }
 
@@ -173,18 +159,12 @@ fn cli_set_game_dir(game_dir_str: &str) -> String {
 	}
 	let mut new_config = config::Config::new();
 	new_config.game_dir = Some(game_dir_str.to_string());
-	match config::set_config(new_config, false) {
-		Ok(()) => (),
-		Err(error) => return format!("Error setting config: {:?}", error),
-	};
+	config::set_config(new_config, false).expect("Error setting config");
 	return format!("Set Game directory to: {}", &game_dir_str);
 }
 
 fn cli_update(mod_dir_option: Option<&str>, compile: bool, delete_nuts: bool) -> String {
-	let config = match config::get_config() {
-		Ok(config) => (config),
-		Err(error) => return format!("Error getting config: {:?}", error),
-	};
+	let config = config::get_config().expect("Error importing config");
 
 	let game_dir_path = match config.game_dir {
 		Some(string) => string,
@@ -205,10 +185,7 @@ fn cli_export(
 	compile: bool,
 	delete_nuts: bool,
 ) -> String {
-	let config = match config::get_config() {
-		Ok(config) => (config),
-		Err(error) => return format!("Error getting config: {:?}", error),
-	};
+	let config = config::get_config().expect("Error importing config");
 
 	let mod_dir_path = match mod_dir_option {
 		Some(string) => Path::new(string),
@@ -241,10 +218,7 @@ fn cli_import(
 	work_dir_option: Option<&str>,
 	keep_cnuts: bool,
 ) -> String {
-	let config = match config::get_config() {
-		Ok(config) => (config),
-		Err(error) => return format!("Error getting config: {:?}", error),
-	};
+	let config = config::get_config().expect("Error importing config");
 
 	let mod_dir_path = match mod_dir_option {
 		Some(string) => Path::new(string),
@@ -268,10 +242,7 @@ fn cli_import(
 }
 
 fn cli_delete() -> String {
-	let config = match config::get_config() {
-		Ok(config) => (config),
-		Err(error) => return format!("Error getting config: {:?}", error),
-	};
+	let config = config::get_config().expect("Error importing config");
 
 	let mod_dir_path = match config.mod_dir.as_ref() {
 		Some(string) => Path::new(string),
