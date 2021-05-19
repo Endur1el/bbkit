@@ -34,8 +34,8 @@ guarantee that so make sure to check for updates.
 ## Usage
 
 This is a CLI application intended for windows (though thanks to Rust's rubostness
-it should work cross-platform, mostly), and therefore requires you to run it via cmd on windows
-in cmd run bbkit -h for help as to the different commands, but here is a list:\
+it should work cross-platform, mostly), and therefore requires you to run it via cmd on windows.\
+In cmd you can run `bbkit -h` for help as to the different commands, but here is a list:\
 Commands are called in the format: `bbkit [SUBCOMMAND] -[SUBCOMMAND_ARGS]`
 * `subcommand [shorthand]` subcommand description
  * `argument [shorthand] {value_to_pass} (required?)` argument description
