@@ -5,6 +5,8 @@ use std::path::Path;
 
 mod config;
 mod bbio;
+#[cfg(test)]
+mod tests;
 
 fn main() {
 	let yaml_config = clap::load_yaml!("cli.yml");
