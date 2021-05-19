@@ -10,6 +10,10 @@ mod bbio;
 mod tests;
 
 fn main() {
+	cli();
+}
+
+fn cli() {
 	let yaml_config = clap::load_yaml!("cli.yml");
 	let matches = clap::App::from_yaml(yaml_config).get_matches();
 
@@ -77,7 +81,7 @@ fn main() {
 			let subcommand_matches = matches.subcommand_matches("import").unwrap();
 			let mut mod_dir: Option<&str> = None;
 			let mut work_dir: Option<&str> = None;
-			let mut delete_cnuts = true;
+			let mut keep_cnuts = false;
 
 			if subcommand_matches.is_present("mod") {
 				mod_dir = Some(subcommand_matches.value_of("mod").unwrap())
@@ -85,16 +89,15 @@ fn main() {
 			if subcommand_matches.is_present("work_dir") {
 				work_dir = Some(subcommand_matches.value_of("work_dir").unwrap())
 			}
-			if subcommand_matches.is_present("keep_cnuts") { // Codebase needs to shift to keep rather than delete
-				delete_cnuts = false;
+			if subcommand_matches.is_present("keep_cnuts") {
+				keep_cnuts = true;
 			}
-			println!("{}", cli_import(mod_dir, work_dir, delete_cnuts));
+			println!("{}", cli_import(mod_dir, work_dir, keep_cnuts));
 		}
 		Some("delete") => println!("{}", cli_delete()),
 		Some("log") => println!("{}", cli_log()),
 		Some(_) | None => {println!("Unknown command, use -h for help");}
 	}
-	
 }
 
 
@@ -210,7 +213,7 @@ fn cli_export(mod_dir_option: Option<&str>, export_dir_option: Option<&str>, com
 	}
 }
 
-fn cli_import(mod_dir_option: Option<&str>, work_dir_option: Option<&str>, delete_cnuts: bool) -> String{
+fn cli_import(mod_dir_option: Option<&str>, work_dir_option: Option<&str>, keep_cnuts: bool) -> String{
 	let config = match config::get_config() {
 		Ok(config) => (config),
 		Err(error) => return format!("Error getting config: {:?}", error),
@@ -231,7 +234,7 @@ fn cli_import(mod_dir_option: Option<&str>, work_dir_option: Option<&str>, delet
 		}
 	};
 
-	match bbio::import_mod(mod_dir_path, work_dir_path, delete_cnuts) {
+	match bbio::import_mod(mod_dir_path, work_dir_path, keep_cnuts) {
 		Ok(()) => return "Mod imported".to_string(),
 		Err(error) => return format!("Error Importing mod: {:?}", error),
 	}

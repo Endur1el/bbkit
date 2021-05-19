@@ -53,7 +53,7 @@ pub fn decompile_cnut (file_source_path: &Path, file_target_path: &Path) -> Resu
 	return Ok(())
 }*/
 
-pub fn import_mod (mod_file_path: &Path, target_dir: &Path, delete_cnuts: bool) -> std::io::Result<()>{
+pub fn import_mod (mod_file_path: &Path, target_dir: &Path, keep_cnuts: bool) -> std::io::Result<()>{
 
 	let imported_mod_path = target_dir.join(mod_file_path.file_stem().unwrap());
 
@@ -76,9 +76,9 @@ pub fn import_mod (mod_file_path: &Path, target_dir: &Path, delete_cnuts: bool) 
 				if extension.eq("cnut") {
 					let mut file_target_path = file_path.clone();
 					file_target_path.set_extension("nut");
-					decompile_cnut(&file_path, &file_target_path)?;
+					if !file_target_path.exists() {decompile_cnut(&file_path, &file_target_path)?;}
 
-					if delete_cnuts {
+					if !keep_cnuts {
 						std::fs::remove_file(file_path)?;
 					}
 				}
