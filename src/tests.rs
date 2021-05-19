@@ -1,8 +1,9 @@
 use crate::Path;
 use blake2::{Blake2b, Digest};
 use std::fs;
+use crate::Result;
 
-fn get_file_hash(file_path: &Path) -> std::io::Result<String> {
+fn get_file_hash(file_path: &Path) -> Result<String> {
 	let mut hash = Blake2b::new();
 	
 	let file = fs::read(file_path)?;
@@ -10,24 +11,19 @@ fn get_file_hash(file_path: &Path) -> std::io::Result<String> {
 	Ok(format!("{:x}", hash.finalize()))
 }
 
-fn get_zip_hash(zip_path: &Path) -> std::io::Result<String> {
-	let unzip_path = std::env::current_dir().unwrap().join("temp");
-	let mut archive = match zip::ZipArchive::new(std::fs::File::open(zip_path)?) {
-		Ok(zip) => zip,
-		Err(_) => return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to create zip")),
-	};
-
-	match archive.extract(&unzip_path){
-		Ok(()) => (),
-		Err(_) => return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to extract zip")),
-	};
-
-	let hash = get_hash(&unzip_path);
-	std::fs::remove_dir_all(unzip_path)?;
-	return hash;
+fn get_zip_hash(zip_path: &Path) -> Result<String> {
+	let mut archive = zip::ZipArchive::new(std::fs::File::open(zip_path)?)?;
+	let mut hash = Blake2b::new();
+	for i in 0..archive.len() {
+		let mut file = archive.by_index(i)?;
+		let mut contents: Vec<u8> = Vec::new();
+		std::io::copy(&mut file, &mut contents)?;
+		hash.update(contents);
+	}
+	Ok(format!("{:x}", hash.finalize()))
 }
 
-fn get_hash(file_or_folder_path: &Path) -> std::io::Result<String> {
+fn get_hash(file_or_folder_path: &Path) -> Result<String> {
 	if file_or_folder_path.is_file() {
 		if file_or_folder_path.extension().unwrap().to_os_string() == "zip" {return get_zip_hash(file_or_folder_path)}
 		return get_file_hash(file_or_folder_path)
