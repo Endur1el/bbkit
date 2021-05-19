@@ -93,7 +93,6 @@ pub fn export_mod (mod_source_path: &Path, target_dir: &Path, compile: bool, del
 	let taros_compile = std::env::current_dir().unwrap().join("adams_kit").join("taros_masscompile.bat");
 	let mut mod_target_path = target_dir.join(mod_source_path.file_stem().unwrap());
 	mod_target_path.set_extension("zip");
-	println!("{:?}", mod_target_path);
 	let mod_target_file = File::create(mod_target_path).unwrap();
 	let mut mod_target_zip = zip::ZipWriter::new(&mod_target_file);
 
@@ -102,7 +101,6 @@ pub fn export_mod (mod_source_path: &Path, target_dir: &Path, compile: bool, del
 									.arg(&mod_source_path.join("scripts").as_os_str())
 									.output()
 									.expect("Failed to find taros_masscompile.bat (has the file been moved?)");
-		println!("{:#?}", _compile_out);
 	}
 
 	for walk_file in walkdir::WalkDir::new(&mod_source_path){
