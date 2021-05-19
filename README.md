@@ -77,5 +77,5 @@ Commands are called in the format: `bbkit [SUBCOMMAND] -[SUBCOMMAND_ARGS]`
 `bbkit u` to update mod_EIMO version inside of Battle Brothers/data to whatever is in D:/Other/Modding/BBros/mod_EIMO\
 `bbkit d` to delete the mod_EIMO version inside of Battle Brothers/data\
 `bbkit i -m path/to/mod.zip` to import mod.zip into BBros where it will become a directory mod\
-`bbkit e -m D:/Other/Modding/BBros/mod -d D:/Other -c -r` to export BBros/mod to D:/Other, compile it's nuts into cnuts, and remove it's nuts. This should basically be only used by Legends, it is unlikely anyone else will use enough Overhype code for this
+`bbkit e -m D:/Other/Modding/BBros/mod -d D:/Other -c -r` to export BBros/mod to D:/Other, compile its nuts into cnuts, and remove its nuts. This should basically be only used by Legends, it is unlikely anyone else will use enough Overhype code to have a reasonable excuse to do this.
 
