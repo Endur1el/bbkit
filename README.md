@@ -1,6 +1,8 @@
 # End's Battle Brothers Modkit 
+[![Release](https://img.shields.io/github/v/tag/Endur1el/bbkit)](https://github.com/Endur1el/bbkit/releases/latest)
+[![license](https://img.shields.io/github/license/Endur1el/bbkit)](https://github.com/Endur1el/bbkit/blob/master/LICENSE)
+[![Workflow Status](https://github.com/Endur1el/bbkit/workflows/Rust/badge.svg)](https://github.com/Endur1el/bbkit/actions/workflows/rust.yml)
 
-`Version: 0.1.1`\
 [Github Repo](https://github.com)\
 Author: Enduriel (endur1el@protonmail.com, Discord: Enduriel#2727)
 
