@@ -1,6 +1,6 @@
 # End's Battle Brothers Modkit 
 
-`Version: 0.1.0`\
+`Version: 0.1.1`\
 [Github Repo](https://github.com)\
 Author: Enduriel (endur1el@protonmail.com, Discord: Enduriel#2727)
 
