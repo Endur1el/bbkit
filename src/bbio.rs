@@ -202,7 +202,7 @@ pub fn delete_mod(mod_source_path: &Path, target_dir: &Path) -> std::io::Result<
 }
 
 pub fn open_log() -> Result<(), std::io::Error> {
-	let log = dirs_next::document_dir().unwrap();
+	let log = dirs_next::document_dir().expect("Couldn't locate your documents folder");
 	let log = log.join("Battle Brothers").join("log.html");
 	match open::that(&log.into_os_string()) {
 		Ok(_) => (),
