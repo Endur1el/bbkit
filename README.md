@@ -4,9 +4,6 @@
 [Github Repo](https://github.com)\
 Author: Enduriel (endur1el@protonmail.com, Discord: Enduriel#2727)
 
-### License
-[Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/legalcode)
-
 ## Features
 
 The modkit lets you issue commands to streamline the Battle Brothers modding experience,
@@ -79,3 +76,5 @@ Commands are called in the format: `bbkit [SUBCOMMAND] -[SUBCOMMAND_ARGS]`
 `bbkit i -m path/to/mod.zip` to import mod.zip into BBros where it will become a directory mod\
 `bbkit e -m D:/Other/Modding/BBros/mod -d D:/Other -c -r` to export BBros/mod to D:/Other, compile its nuts into cnuts, and remove its nuts. This should basically be only used by Legends, it is unlikely anyone else will use enough Overhype code to have a reasonable excuse to do this.
 
+### License
+[GNU General Public License 3](https://www.gnu.org/licenses/gpl-3.0.en.html)
