@@ -56,11 +56,11 @@ pub fn get_config() -> Result<Config> {
 
 pub fn set_config(new_config: Config, force: bool) -> Result<()> {
 	let config_path = Path::new("config.yml");
-	let mut config_file = File::create(config_path)?;
 	let config = match force {
 		true => new_config.clone(),
 		false => get_config()?.merge(&new_config),
 	};
+	let mut config_file = File::create(config_path)?;
 	let config_contents = serde_yaml::to_string(&config)?;
 	config_file.write(config_contents.as_bytes())?;
 
